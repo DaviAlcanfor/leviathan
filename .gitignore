@@ -1,0 +1,11 @@
+# Python
+server/.venv/
+__pycache__/
+*.pyc
+
+# C#
+implant/bin/
+implant/obj/
+implant/.vs/
+*.user
+*.sln.user

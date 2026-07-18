@@ -4,8 +4,8 @@ __pycache__/
 *.pyc
 
 # C#
-implant/bin/
-implant/obj/
-implant/.vs/
-*.user
-*.sln.user
+implant/Agent/.vs/
+implant/Agent/bin/
+implant/Agent/obj/
+implant/Agent/*.user
+implant/Agent/*.sln.user

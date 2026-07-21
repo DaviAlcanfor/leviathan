@@ -17,5 +17,6 @@ implant/Agent/bin/
 implant/Agent/obj/
 implant/Agent/*.user
 implant/Agent/*.sln.user
-
+implant/Loader/bin/
+implant/Loader/obj/
 

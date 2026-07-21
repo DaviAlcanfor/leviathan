@@ -1,25 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 
-class CommandExecuton
+internal class CommandExecution
 {
-    private string currentDirectory;
+    private string currentDirectory = "C:\\";
 
-    public CommandExecuton()
+    public string Run(string command)
     {
-        currentDirectory = Environment.CurrentDirectory;
-    }
+        if (command.StartsWith("cd "))
+        {
+            currentDirectory = command.Substring(3).Trim();
+            return "";
+        }
 
-    public string ExecuteCommand(string command)
-    {
-        return "";
-    }
+        Process process = new Process();
+        process.StartInfo.FileName = "cmd.exe";
+        process.StartInfo.Arguments = "/c " + command;
+        process.StartInfo.WorkingDirectory = currentDirectory;
+        process.StartInfo.UseShellExecute = false;
+        process.StartInfo.RedirectStandardOutput = true;
+        process.StartInfo.RedirectStandardError = true;
+        process.StartInfo.CreateNoWindow = true;
 
-    public string RunCommand(string command)
-    {
-        return "";
+        process.Start();
+
+        string output = process.StandardOutput.ReadToEnd();
+        string error = process.StandardError.ReadToEnd();
+
+        process.WaitForExit();
+
+        return string.IsNullOrEmpty(error) ? output : error;
     }
 }

@@ -13,5 +13,32 @@
 
         private static readonly int PollingInterval = 5000;
         private static readonly int JitterMax = 3000;
+
+
+
+        public static int GetPollingInterval()
+        {
+            return PollingInterval;
+        }
+
+        public static int GetJitterMax()
+        {
+            return JitterMax;
+        }
+
+        public static string GetServerUrl()
+        {
+            return ServerUrl;
+        }
+
+        public static string GetRandomUserAgent()
+        {
+            Random random = new Random();
+            int index = random.Next(UserAgents.Length);
+            return UserAgents[index];
+        }
+
+        // maybe some more
+
     }
 }

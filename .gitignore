@@ -1,4 +1,8 @@
 .vscode
+**/.env
+server/certs/key.pem
+server/agent.bin
+*.db
 
 # Python
 server/.venv/
@@ -13,3 +17,5 @@ implant/Agent/bin/
 implant/Agent/obj/
 implant/Agent/*.user
 implant/Agent/*.sln.user
+
+

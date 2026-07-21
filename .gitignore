@@ -1,9 +1,13 @@
+.vscode
+
 # Python
 server/.venv/
 __pycache__/
 *.pyc
 
 # C#
+implant/.vs/
+**/.vs/
 implant/Agent/.vs/
 implant/Agent/bin/
 implant/Agent/obj/

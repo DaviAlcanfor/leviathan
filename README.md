@@ -1,33 +1,18 @@
 # Leviathan
 
-C2 framework consisting of a Flask server (controller) and C# agent (implant) 
-compiled to position-independent shellcode via Donut for payload delivery.
+C2 framework with a Flask server and C# agent compiled to position-independent shellcode via Donut.
 
 ## Architecture
 
-```
-        Operator
-            |
-        Flask C2
-       /        \
-   Agent.dll  Shellcode (via Donut)
-      |            |
-   Victim Host  Injected Process
-```
+Operator (cli.py)
+|
+Flask Server
+|
+/ping ← Agent checks in + sends output
+/pong → Operator queues command
+/assets → Serves shellcode
 
-## Components
-
-| Component | Status | Notes |
-|-----------|--------|-------|
-| SystemInfo | ✓ | Victim data collection |
-| CommandExecution | - | Shell command execution |
-| Screenshot | - | Screen capture |
-| Audio | - | Microphone recording |
-| Keylog | - | Keyboard monitoring |
-| Protocol | - | C2 communication |
-| Flask Server | - | Command & control |
-| Donut Integration | - | Shellcode generation |
 
 ## Disclaimer
 
-Educational and authorized testing only.
+For educational purposes and authorized testing only.

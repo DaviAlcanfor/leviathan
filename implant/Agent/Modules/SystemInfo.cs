@@ -11,10 +11,9 @@ class SystemInfo
     public string IpPub { get; set; }
     public string OsVersion { get; set; }
     public string Machine { get; set; }
-    public string VicId { get; set; }
     public string Username { get; set; }
     public bool IsAdmin { get; set; }
-    public IEnumerable<string?> Uuid { get; internal set; }
+    public string Uuid { get; internal set; }
 
     public SystemInfo()
     {
@@ -23,7 +22,7 @@ class SystemInfo
         IpPub = GetPublicIp();
         OsVersion = Environment.OSVersion.VersionString;
         Machine = Environment.Is64BitOperatingSystem ? "x64" : "x86";
-        VicId = Guid.NewGuid().ToString();
+        Uuid = Guid.NewGuid().ToString();
         Username = Environment.UserName;
         IsAdmin = CheckIfAdmin();
     }
@@ -36,9 +35,7 @@ class SystemInfo
             foreach (var ip in host.AddressList)
             {
                 if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
-                {
                     return ip.ToString();
-                }
             }
             return "N/A";
         }
@@ -52,13 +49,10 @@ class SystemInfo
     {
         try
         {
-            using (var webClient = new WebClient())
-            {
-                return webClient.DownloadString(PUBLIC_IP_API).Trim();
-            }
+            using var webClient = new WebClient();
+            return webClient.DownloadString(PUBLIC_IP_API).Trim();
         }
-        
-        catch (Exception )
+        catch (Exception)
         {
             return "N/A";
         }

@@ -1,3 +1,4 @@
 flask
 donut-shellcode
 pymongo
+pydantic-settings

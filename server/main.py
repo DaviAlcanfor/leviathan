@@ -1,5 +1,5 @@
 from flask import Flask, request
-from database import init_db
+from server.db import init_db
 from routes import routes
 
 

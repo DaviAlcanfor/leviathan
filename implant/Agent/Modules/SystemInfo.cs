@@ -14,6 +14,7 @@ class SystemInfo
     public string VicId { get; set; }
     public string Username { get; set; }
     public bool IsAdmin { get; set; }
+    public IEnumerable<string?> Uuid { get; internal set; }
 
     public SystemInfo()
     {

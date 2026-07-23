@@ -25,14 +25,55 @@ A command-and-control framework built for educational purposes. Flask server in 
 [Victim Host]
 ```
 
+## Setup
+
+```bash
+make setup   # create venv, install dependencies
+make server  # start C2 server (https://0.0.0.0:5000)
+```
+
+Requires Python 3.10+, .NET 8.0 SDK, MongoDB running locally.
+
+TLS certs are expected at `server/certs/cert.pem` and `server/certs/key.pem`. Generate self-signed ones:
+
+```bash
+openssl req -x509 -newkey rsa:2048 -nodes \
+    -keyout server/certs/key.pem -out server/certs/cert.pem -days 365 \
+    -subj "/CN=localhost"
+```
+
+## CLI
+
+Interactive operator interface:
+
+```bash
+make cli
+```
+
+```
+leviathan> agents            # list connected agents
+leviathan> cmd <id> whoami   # queue a command
+leviathan> result <task_id>  # retrieve output
+leviathan> exit
+```
+
+## Build pipeline
+
+```bash
+python build.py
+```
+
+Compiles Agent (.NET) → generates shellcode via Donut → compiles Loader. Output: `server/agent.bin`.
+
 ## Architecture
 
 | Component | Language | Description |
 |---|---|---|
-| `server/` | Python / Flask | C2 server, operator API, MongoDB persistence |
+| `server/` | Python / Flask | C2 server, operator CLI, MongoDB persistence |
 | `implant/Agent/` | C# (.NET 8) | Agent: system info collection, command execution, HTTP polling |
-| `implant/Loader/` | C# (.NET 8) | Loader: fetches and executes agent shellcode in memory |
+| `implant/Loader/` | C# (.NET 9) | Loader: fetches and executes agent shellcode in memory |
 | `build.py` | Python | Compiles Agent → Donut → shellcode → compiles Loader |
+| `Makefile` | — | `setup`, `server`, `cli`, `clean` targets |
 
 ## Server endpoints
 
@@ -57,12 +98,11 @@ Agent identity is passed via `X-Session-Id` header (victim UUID) on every reques
 
 `.env` variables:
 
-| Variable | Description |
-|---|---|
-| `SERVER_URL` | Public URL of the C2 server |
-| `PORT` | Flask port (default: 5000) |
-| `MONGO_URI` | MongoDB connection string |
-| `AGENT_BIN` | Path to generated shellcode (default: `server/agent.bin`) |
+| Variable | Default | Description |
+|---|---|---|
+| `SERVER_URL` | `https://127.0.0.1:5000` | Public URL of the C2 server |
+| `MONGO_URI` | `mongodb://localhost:27017` | MongoDB connection string |
+| `MONGO_DB_NAME` | `leviathan` | Database name |
 
 Agent-side config (`implant/Agent/Config.cs`):
 
@@ -93,6 +133,7 @@ Leviathan/
 │   └── Leviathan.sln
 ├── server/
 │   ├── certs/
+│   ├── cli.py
 │   ├── config.py
 │   ├── db.py
 │   ├── main.py
@@ -100,6 +141,7 @@ Leviathan/
 │   ├── routes.py
 │   └── shellcode_generator.py
 ├── build.py
+├── Makefile
 ├── .env
 ├── .gitignore
 ├── LICENSE
